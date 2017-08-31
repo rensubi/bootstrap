@@ -102,15 +102,17 @@ fi
 prereq () {
     $_ex 'apt-get install -y wget'
 
-    wget -O bootstrap-common-functions "${OPENBATON_BOOTSTRAP_FUNCTIONS_BASE_URL}/${openbaton_bootstrap_version}/bootstrap-common-functions"
+    #wget -O bootstrap-common-functions "${OPENBATON_BOOTSTRAP_FUNCTIONS_BASE_URL}/${openbaton_bootstrap_version}/bootstrap-common-functions"
+    #. ./bootstrap-common-functions
     . ./bootstrap-common-functions
 }
 
 main_src () {
     prereq
 
-    wget -O bootstrap-src-functions "${OPENBATON_BOOTSTRAP_FUNCTIONS_BASE_URL}/${openbaton_bootstrap_version}/bootstrap-src-functions"
-    . ./bootstrap-src-functions
+    #wget -O bootstrap-src-functions "${OPENBATON_BOOTSTRAP_FUNCTIONS_BASE_URL}/${openbaton_bootstrap_version}/bootstrap-src-functions"
+    #. ./bootstrap-src-functions
+    . ./bootstrap/bootstrap-src-functions
     src_bootstrap
 }
 

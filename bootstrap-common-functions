@@ -18,9 +18,12 @@ DEBIAN_FRONTEND=${openbaton_installation_manner:-$DEBIAN_FRONTEND_DEFAULT}
 
 BOOTSTRAP_DIR=$(pwd)
 
-OPENBATON_NFVO_REPO_URL="https://github.com/openbaton/NFVO"
-OPENBATON_PLUGINS_VIMDRIVERS_OPENSTACK_4J_REPO_URL="https://github.com/openbaton/openstack4j-plugin"
-OPENBATON_VNFM_GENERIC_REPO_URL="https://github.com/openbaton/generic-vnfm"
+#OPENBATON_NFVO_REPO_URL="https://github.com/openbaton/NFVO"
+#OPENBATON_PLUGINS_VIMDRIVERS_OPENSTACK_4J_REPO_URL="https://github.com/openbaton/openstack4j-plugin"
+#OPENBATON_VNFM_GENERIC_REPO_URL="https://github.com/openbaton/generic-vnfm"
+OPENBATON_NFVO_REPO_URL="http://txslnno-github.cds.eng.vzwcorp.com/OpenIMS/NFVO"
+OPENBATON_PLUGINS_VIMDRIVERS_OPENSTACK_4J_REPO_URL="http://txslnno-github.cds.eng.vzwcorp.com/OpenIMS/openstack4j-plugin"
+OPENBATON_VNFM_GENERIC_REPO_URL="http://txslnno-github.cds.eng.vzwcorp.com/OpenIMS/generic-vnfm"
 OPENBATON_FMS_REPO_URL="https://github.com/openbaton/fm-system"
 OPENBATON_ASE_REPO_URL="https://github.com/openbaton/autoscaling-engine"
 OPENBATON_NSE_REPO_URL="https://github.com/openbaton/network-slicing-engine"

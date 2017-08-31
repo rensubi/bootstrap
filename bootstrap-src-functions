@@ -182,7 +182,7 @@ src_checkout_nfvo () {
     git clone --recursive "${OPENBATON_NFVO_REPO_URL}.git" "${OPENBATON_NFVO_DIR}"
     cd "${OPENBATON_NFVO_DIR}"
 
-    git checkout ${nfvo_version}
+    #git checkout ${nfvo_version}
     
     $_ex 'rm -rf '"${OPENBATON_BASE_CONFIG_DIR}; mkdir -p ${OPENBATON_BASE_CONFIG_DIR}"
     $_ex 'cp '"${OPENBATON_NFVO_DIR}/etc/openbaton.properties ${OPENBATON_SRC_NFVO_CONFIG_FILE_ABSOLUTHE}"
@@ -257,9 +257,11 @@ src_do_checkout () {
     git clone --recursive "${component_repo_url}.git" "${component_name}"
     cd "${component_name}"
 
-    git checkout ${component_version}
+    #git checkout ${component_version}
 
-    $_ex 'cp '"${component_properties_file_src} ${OPENBATON_BASE_CONFIG_DIR}/${component_properties_file_dest}"
+    if [ "${component_properties_file_src}" != "" ]; then
+       $_ex 'cp '"${component_properties_file_src} ${OPENBATON_BASE_CONFIG_DIR}/${component_properties_file_dest}"
+    fi
     installed=0
 }
 
@@ -320,6 +322,27 @@ src_compile_additional_component () {
     fi
 }
 
+src_compile_vimdriver () {
+    component_name="${1}"                       # the directory on which the repo has been cloned
+    component_name_fancy="${2}"
+
+    echo " * Compiling the ${component_name_fancy} .."
+    cd "${OPENBATON_BASE_DIR}/${component_name}"
+    ./gradlew build
+    #./${component_name}.sh compile
+
+    if [ $? -ne 0 ]; then
+        echo " * ERROR: The compilation of the ${2} failed"
+        exit 1
+    fi
+
+    echo " Copy the Open Baton VIM Driver Plugins .."
+    #wget -nH --cut-dirs 2 -r --no-parent  --reject "index.html*" "${OPENBATON_PLUGINS_VIMDRIVERS_STABLE_URL}" -P "${OPENBATON_TMP_FOLDER}"
+    mkdir -p ${OPENBATON_PLUGINS_VIMDRIVERS_DIR}
+    cp -r ${OPENBATON_BASE_DIR}/${component_name}/build/libs/* "${OPENBATON_PLUGINS_VIMDRIVERS_DIR}"
+    
+}
+
 src_start_additional_component () {
     component_name="${1}"                       # the directory on which the repo has been cloned
     component_name_fancy="${2}"
@@ -333,7 +356,6 @@ src_deploy_additional_component () {
     src_compile_additional_component "${1}" "${2}"
     src_start_additional_component "${1}" "${2}"
 }
-
 
 #############
 #### ASE ####
@@ -471,7 +493,12 @@ src_bootstrap () {
 
     # VIM Driver Plugins
     #openbaton_plugin_vimdriver_all_version=${openbaton_plugin_vimdriver_all_version:-$OPENBATON_PLUGIN_VIMDRIVER_OPENSTACK_VERSION_DEFAULT}
-    src_download_plugins
+    #src_download_plugins
+    # Openstack VimDriver
+    src_checkout_additional_component "${OPENBATON_PLUGINS_VIMDRIVERS_OPENSTACK_4J_REPO_URL}" "openstack4j-plugin" "openstack4j-plugin" "" "" "yes" "3.2.0" "3.2.2"
+    if [ "${installed}" = "0" ]; then
+        src_compile_vimdriver "openstack4j-plugin" "openstack4j-plugin"
+    fi
 
     src_install_rabbitmq
     src_check_environment
@@ -482,7 +509,7 @@ src_bootstrap () {
 
    
     # Generic VNFM
-    src_checkout_additional_component "${OPENBATON_VNFM_GENERIC_REPO_URL}" "generic-vnfm" "Generic VNFM" "src/main/resources/application.properties" "openbaton-vnfm-generic.properties" ${openbaton_vnfm_generic} "3.2.0" "${openbaton_vnfm_generic_version}"
+    src_checkout_additional_component "${OPENBATON_VNFM_GENERIC_REPO_URL}" "generic-vnfm" "Generic VNFM" "src/main/resources/application.properties" "generic-vnfm.properties" ${openbaton_vnfm_generic} "3.2.0" "${openbaton_vnfm_generic_version}"
     if [ "${installed}" = "0" ]; then
         src_deploy_additional_component "generic-vnfm" "Generic VNFM"
     fi
