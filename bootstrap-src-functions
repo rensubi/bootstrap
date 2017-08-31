@@ -322,6 +322,21 @@ src_compile_additional_component () {
     fi
 }
 
+src_install_libs() {
+    component_name="${1}"                       # the directory on which the repo has been cloned
+    component_name_fancy="${2}"
+
+    echo " * Compiling and install the ${component_name_fancy} .."
+    cd "${OPENBATON_BASE_DIR}/${component_name}"
+    ./gradlew install 
+    #./${component_name}.sh compile
+
+    if [ $? -ne 0 ]; then
+        echo " * ERROR: The compilation of the ${2} failed"
+        exit 1
+    fi
+}
+
 src_compile_vimdriver () {
     component_name="${1}"                       # the directory on which the repo has been cloned
     component_name_fancy="${2}"
@@ -494,6 +509,11 @@ src_bootstrap () {
     # VIM Driver Plugins
     #openbaton_plugin_vimdriver_all_version=${openbaton_plugin_vimdriver_all_version:-$OPENBATON_PLUGIN_VIMDRIVER_OPENSTACK_VERSION_DEFAULT}
     #src_download_plugins
+    # openstack librarys
+    src_checkout_additional_component "${OPENBATON_LIBS_REPO_URL}" "openbaton-libs" "openbaton-libs" "" "" "yes" "3.2.0" "3.2.2"
+    if [ "${installed}" = "0" ]; then
+        src_install_libs "openbaton-libs" "openbaton-libs"
+    fi
     # Openstack VimDriver
     src_checkout_additional_component "${OPENBATON_PLUGINS_VIMDRIVERS_OPENSTACK_4J_REPO_URL}" "openstack4j-plugin" "openstack4j-plugin" "" "" "yes" "3.2.0" "3.2.2"
     if [ "${installed}" = "0" ]; then
